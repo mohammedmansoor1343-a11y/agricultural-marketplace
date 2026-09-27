@@ -66,3 +66,10 @@ for r in (
 @app.get("/api/health")
 def health():
     return {"status": "ok", "app": settings.APP_NAME, "version": settings.VERSION, "demo_mode": settings.DEMO_MODE}
+@app.get("/")
+def home():
+    return {
+        "message": "Welcome to AgroMarket API",
+        "status": "running",
+        "docs": "/docs"
+    }
