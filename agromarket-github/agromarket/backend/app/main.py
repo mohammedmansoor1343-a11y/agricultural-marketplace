@@ -5,7 +5,20 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.database import Base, engine
-from app.routers import aggregation, auth, deliveries, lots, matching, meta, orders, payments, prices, produce, users
+from app.routers import (
+    aggregation,
+    auth,
+    deliveries,
+    lots,
+    matching,
+    meta,
+    orders,
+    payments,
+    prices,
+    produce,
+    users,
+)
+
 
 DESCRIPTION = """
 Prototype API for the AgroMarket agricultural marketplace.
@@ -22,27 +35,41 @@ Prototype API for the AgroMarket agricultural marketplace.
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
+
     try:
         from seed.seed_data import seed_if_empty
 
         seed_if_empty()
+
     except ImportError:
         import sys
         from pathlib import Path
 
-        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        sys.path.insert(
+            0,
+            str(Path(__file__).resolve().parent.parent),
+        )
+
         from seed.seed_data import seed_if_empty
 
         seed_if_empty()
+
     yield
 
 
-app = FastAPI(title=settings.APP_NAME, version=settings.VERSION, description=DESCRIPTION, lifespan=lifespan)
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.VERSION,
+    description=DESCRIPTION,
+    lifespan=lifespan,
+)
 
+
+# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",s
+        "http://localhost:5173",
         "http://127.0.0.1:5173",
         "https://farmer-buyer-marketplace-chi.vercel.app",
         "https://farmer-buyer-marketplace-git-main-aletheia-s.vercel.app",
@@ -54,7 +81,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for r in (
+
+# Register API Routers
+routers = [
     auth.router,
     produce.router,
     aggregation.router,
@@ -66,17 +95,28 @@ for r in (
     users.router,
     prices.router,
     meta.router,
-):
-    app.include_router(r, prefix="/api")
+]
+
+for router in routers:
+    app.include_router(router, prefix="/api")
 
 
+# Health Check Endpoint
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "app": settings.APP_NAME, "version": settings.VERSION, "demo_mode": settings.DEMO_MODE}
+    return {
+        "status": "ok",
+        "app": settings.APP_NAME,
+        "version": settings.VERSION,
+        "demo_mode": settings.DEMO_MODE,
+    }
+
+
+# Root Endpoint
 @app.get("/")
 def home():
     return {
         "message": "Welcome to AgroMarket API",
         "status": "running",
-        "docs": "/docs"
+        "docs": "/docs",
     }
