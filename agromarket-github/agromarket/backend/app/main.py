@@ -42,12 +42,13 @@ app = FastAPI(title=settings.APP_NAME, version=settings.VERSION, description=DES
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://farmer-buyer-marketplace-chi.vercel.app",
-    "https://farmer-buyer-marketplace-git-main-aletheia-s.vercel.app",
-    "https://farmer-buyer-marketplace-4z3kz7c3-aletheia-s.vercel.app",
-],
+        "http://localhost:5173",s
+        "http://127.0.0.1:5173",
+        "https://farmer-buyer-marketplace-chi.vercel.app",
+        "https://farmer-buyer-marketplace-git-main-aletheia-s.vercel.app",
+        "https://farmer-buyer-marketplace-4z3kz7c3-aletheia-s.vercel.app",
+        "https://farmer-buyer-marketplace-ckq0feu-aletheia-s.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
